@@ -1732,6 +1732,23 @@ function events.MonsterAttacked(t)
 	end
 end
 
+function events.MonsterAttacked(t)
+	local o = t.Attacker and t.Attacker.Object
+	local pl = t.Attacker and t.Attacker.Player
+	if not (o and pl and o.Spell == const.Spells.Fear) or t.Handled then
+		return
+	end
+	local mon = t.Monster
+	local cc = CCMAP[const.Spells.Fear]
+	local before = mon.SpellBuffs[cc.Debuff].ExpireTime
+	local res = mon.Resistances[cc.DamageKind]
+	RunNextTick(function()
+		if mon.SpellBuffs[cc.Debuff].ExpireTime > before then
+			applyCCDebuff(mon, cc, pl, const.Spells.Fear, res, true)
+		end
+	end)
+end
+
 -- Debuff Groups for diminishing returns
 -- Group 1: Slow/Damage reduction
 -- Group 2: Fear/Charm/Control

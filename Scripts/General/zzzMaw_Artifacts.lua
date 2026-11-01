@@ -66,7 +66,10 @@ end
 local knockbacks = {}
 
 local function knockBack(t, pl, it)
-	local mult = MawArtifactSpellPower(pl, it)/math.max(t.Monster.Level, 1)^0.75
+	if t.Monster.Level == 0 then
+		return
+	end
+	local mult = MawArtifactSpellPower(pl, it)/t.Monster.Level^0.75
 	local entry = knockbacks[t.MonsterIndex]
 	if not entry then
 		entry = {}
